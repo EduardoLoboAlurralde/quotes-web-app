@@ -1,7 +1,24 @@
 import Head from "next/head";
-import React from "react";
 
-export default function Home() {
+const defaultEndpoint = "http://localhost:3006/api/quotes";
+
+export async function getServerSideProps(context) {
+  const res = await fetch(defaultEndpoint);
+  const data = await res.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data }, // will be passed to the page component as props
+  };
+}
+
+export default function Home({ data }) {
+  console.log(data);
   return (
     <div>
       <Head>
@@ -12,14 +29,17 @@ export default function Home() {
 
       <div
         style={{
-          background: "grey",
           width: "100%",
           display: "flex",
+          flexDirection: "column",
           height: 500,
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        hello
+        <div>
+          <text style={{ fontSize: 45 }}>Quotes</text>
+        </div>
       </div>
     </div>
   );
