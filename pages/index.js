@@ -1,8 +1,9 @@
 import Head from "next/head";
+import HomeContent from "../src/components/HomeContent";
 
 const defaultEndpoint = "http://localhost:3006/api/quotes";
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   const res = await fetch(defaultEndpoint);
   const data = await res.json();
 
@@ -18,7 +19,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({ data }) {
-  console.log(data);
   return (
     <div>
       <Head>
@@ -26,21 +26,7 @@ export default function Home({ data }) {
         <meta name="Quotes app description" content="Quotes" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          height: 500,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <text style={{ fontSize: 45 }}>Quotes</text>
-        </div>
-      </div>
+      <HomeContent data={data} />
     </div>
   );
 }
