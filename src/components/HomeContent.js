@@ -1,6 +1,5 @@
-import Colors from "../constants/Colors";
 import Separator from "./Separator";
-import QuoteCard from "./QuoteCard";
+import Table from "../components/Table";
 
 export default function HomeContent({ data }) {
   const { total, quotes } = data || {};
@@ -19,13 +18,14 @@ export default function HomeContent({ data }) {
   };
 
   const newQuoteBody = {
-    author: "Napoleon",
-    category: "HISTORY",
-    summary: "Visteme despacio que estoy apurado",
+    author: "Albus Dumbledore",
+    category: "BOOK",
+    summary:
+      "Tiempos oscuros y difíciles nos aguardan. Pronto deberemos elegir entre lo que es correcto y lo que es fácil",
     context: {
-      type: "HISTORICAL_EVENT",
+      type: "BOOK_REFERENCE",
       value: {
-        event: "Revolución Argentina",
+        event: "Harry Potter y el cáliz de fuego",
       },
     },
   };
@@ -33,18 +33,18 @@ export default function HomeContent({ data }) {
   return (
     <div
       style={{
-        width: "100%",
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100vh", // Alto de la ventana
+        width: "100vw", // Ancho de la ventana
         justifyContent: "center",
         alignItems: "center",
-        background: Colors.a15,
+        background: "grey",
       }}
     >
       <div>
         {/*//que se puede hacer en esta pagina*/}
-        <p style={{ fontSize: 45, color: Colors.b08 }}>Quotes</p>
+        <p style={{ fontSize: 45, color: "darkgray" }}>Quotes</p>
         <p style={{ fontSize: 25 }}>Lista de frases ({total})</p>
         <Separator height />
         <button
@@ -54,21 +54,8 @@ export default function HomeContent({ data }) {
           Agregar Frase +
         </button>
         <Separator height />
-        {quotes.map((qt, idx) => {
-          return (
-            <div
-              key={idx}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <QuoteCard quote={qt} />
-              <Separator height x={0.5} />
-            </div>
-          );
-        })}
+        <Table list={quotes} />
+        <Separator height />
       </div>
     </div>
   );

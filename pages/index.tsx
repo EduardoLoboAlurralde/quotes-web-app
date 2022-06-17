@@ -1,7 +1,25 @@
 import React from "react";
 import Head from "next/head";
+import HomeContent from "../src/components/HomeContent";
 
-export default function Home() {
+const defaultEndpoint = "http://localhost:3006/api/quotes";
+export async function getServerSideProps() {
+  const res = await fetch(defaultEndpoint);
+  const data = await res.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data }, // will be passed to the page component as props
+  };
+}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export default function Home({ data }) {
   return (
     <div>
       <Head>
@@ -9,7 +27,9 @@ export default function Home() {
         <meta name="Quotes app description" content="Quotes" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>hello</div>
+      <div>
+        <HomeContent data={data} />
+      </div>
     </div>
   );
 }
