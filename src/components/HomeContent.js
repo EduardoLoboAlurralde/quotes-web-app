@@ -4,10 +4,12 @@ import { useState } from "react";
 import Alert from "@mui/material/Alert";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SaveIcon from "@mui/icons-material/Save";
+import CreateQuoteDialog from "./CreateQuoteDialog";
 
 export default function HomeContent({ data }) {
   const { total, quotes } = data || {};
 
+  const [openModal, setOpenModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
@@ -51,19 +53,6 @@ export default function HomeContent({ data }) {
     return response.json(); // parses JSON response into native JavaScript objects
   };
 
-  const newQuoteBody = {
-    author: "Albus Dumbledore",
-    category: "BOOK",
-    summary:
-      "Tiempos oscuros y difíciles nos aguardan. Pronto deberemos elegir entre lo que es correcto y lo que es fácil",
-    context: {
-      type: "BOOK_REFERENCE",
-      value: {
-        event: "Harry Potter y el cáliz de fuego",
-      },
-    },
-  };
-
   return (
     <div
       style={{
@@ -81,17 +70,26 @@ export default function HomeContent({ data }) {
         <p style={{ fontSize: 45, color: "darkgray" }}>Quotes</p>
         <p style={{ fontSize: 25 }}>Lista de frases ({total})</p>
         <Separator height />
-
-        <LoadingButton
-          loading={loading}
-          loadingPosition="start"
-          // loadingIndicator="Loading..."
-          variant="contained"
-          onClick={() => postData(newQuoteBody)}
-          startIcon={<SaveIcon />}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            width: 1000,
+          }}
         >
-          Agregar Frase +
-        </LoadingButton>
+          <LoadingButton
+            loading={loading}
+            loadingPosition="start"
+            // loadingIndicator="Loading..."
+            variant="contained"
+            // onClick={() => postData(newQuoteBody)}
+            onClick={() => setOpenModal(true)}
+            startIcon={<SaveIcon />}
+          >
+            Agregar Frase +
+          </LoadingButton>
+        </div>
+
         <Separator height />
         <Table list={quotesList} total={total} />
         <Separator height />
@@ -102,6 +100,11 @@ export default function HomeContent({ data }) {
           <Alert onClose={() => setShowSuccess(false)}>Quote creada</Alert>
         </div>
       )}
+      <CreateQuoteDialog
+        isVisible={openModal}
+        onClose={() => setOpenModal(false)}
+        onSave={(quote) => postData(quote)}
+      />
     </div>
   );
 }
