@@ -58,9 +58,8 @@ export default function HomeContent({ data }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh", // Alto de la ventana
+        minHeight: "100vh", // Alto de la ventana
         width: "100vw", // Ancho de la ventana
-        justifyContent: "center",
         alignItems: "center",
         background: "grey",
       }}

@@ -20,14 +20,21 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
+import DeleteQuoteBtn from "./DeleteQuoteBtn";
 
 function Row({ row }) {
   const [open, setOpen] = useState(false);
-  const { author, category, context, createAt, status, summary, updateAt } =
-    row || {};
-
+  const {
+    author,
+    category,
+    context,
+    createAt,
+    status,
+    summary,
+    updateAt,
+    _id,
+  } = row || {};
   const {
     type,
     value: { event },
@@ -64,7 +71,7 @@ function Row({ row }) {
           {moment(updateAt).format("DD/MM/YYYY")}
         </TableCell>
         <TableCell align="center">
-          <DeleteIcon />
+          <DeleteQuoteBtn id={_id} />
         </TableCell>
       </TableRow>
       <TableRow style={{ background: "lightgray" }}>
@@ -84,9 +91,6 @@ function Row({ row }) {
                       <TableCell align="left"> Evento: {event} </TableCell>
                     </TableRow>
                   )}
-                  {/*<TableCell align="left">*/}
-                  {/*  <TableRow>type: {type}</TableRow>*/}
-                  {/*</TableCell>*/}
                 </TableBody>
               </Table>
             </Box>
