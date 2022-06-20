@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import Loading from "../components/Loading";
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -63,9 +64,16 @@ export default function CustomDialog({
   secondAction = () => "",
   secondBtn = "Cancel",
   title = "Title",
-
+  loading,
   children,
 }) {
+  if (loading) {
+    return (
+      <StyledDialog open={loading}>
+        <Loading />
+      </StyledDialog>
+    );
+  }
   return (
     <div>
       <StyledDialog
@@ -84,7 +92,7 @@ export default function CustomDialog({
           {!!secondBtn && (
             <StyledBtn
               autoFocus
-              onClick={firstAction}
+              onClick={secondAction}
               variant={"contained"}
               color={"secondary"}
             >
@@ -94,7 +102,7 @@ export default function CustomDialog({
 
           <StyledBtn
             autoFocus
-            onClick={secondAction}
+            onClick={firstAction}
             variant={"contained"}
             color={"primary"}
             disabled={firstBtnDisabled}

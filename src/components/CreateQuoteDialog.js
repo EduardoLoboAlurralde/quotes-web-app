@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Separator from "./Separator";
@@ -6,25 +6,22 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 import CustomDialog from "./CustomDialog";
 
-//remplazar por respuesta GET
-const categorias = [
-  {
-    value: "HISTORY",
-    label: "Historia",
-  },
-  {
-    value: "MUSIC",
-    label: "Música",
-  },
-  {
-    value: "BOOK",
-    label: "Libro",
-  },
-  {
-    value: "MOVIE",
-    label: "Pelicula",
-  },
-];
+//this to traslation
+const CATEGORIES = {
+  HISTORY: "História",
+  MUSIC: "Música",
+  BOOK: "Libro",
+  MOVIE: "Pelicula",
+};
+
+//this to traslation
+const TYPES = {
+  HISTORICAL_EVENT: "Evento Histórico",
+  MUSIC_PIECE: "Pieza musical",
+  MOVIE: "Pelicula",
+  TV_SHOW: "Programa de televisión",
+  BOOK_REFERENCE: "Literatura",
+};
 
 const type = [
   {
@@ -72,8 +69,9 @@ export const LengthLabel = ({ length, maxLength, children }) => {
 export default function CreateQuoteDialog({
   isVisible,
   onClose = () => "",
-  onSave = () => "",
+  onSuccess = () => "",
 }) {
+  const [categories, setCategories] = useState([]);
   const [context, setContext] = useState({
     type: "",
     value: {
@@ -90,6 +88,29 @@ export default function CreateQuoteDialog({
     ...quote,
     context,
   };
+
+  const categoriesObject = categories?.length
+    ? categories?.map((cat) => {
+        return {
+          ...cat,
+          label: CATEGORIES[cat.name],
+        };
+      })
+    : [];
+
+  useEffect(() => {
+    if (categories.length === 0) {
+      (async () => {
+        try {
+          const res = await fetch("http://localhost:3006/api/categories");
+          const data = await res.json();
+          setCategories(data.categories);
+        } catch (e) {
+          console.log(e.message);
+        }
+      })();
+    }
+  }, [categories]);
 
   const MAX_AUTHOR_LENGTH = 30;
   const MAX_SUMMARY_LENGTH = 50;
@@ -109,11 +130,6 @@ export default function CreateQuoteDialog({
     onClose();
   };
 
-  const onPressSave = () => {
-    onSave(newQuote);
-    onCloseModal();
-  };
-
   const enableSave = () => {
     const checkSummary = quote.summary.length > 10;
     const checkCategory = quote.category.length > 0;
@@ -121,15 +137,45 @@ export default function CreateQuoteDialog({
 
     return checkCategory && checkSummary && checkType;
   };
+  const [loading, setLoading] = useState(false);
+
+  const postData = async (data = {}) => {
+    const url = "http://localhost:3006/api/quotes";
+    setLoading(true);
+    try {
+      const response = await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+      });
+      console.log("response", response);
+      setLoading(false);
+      if (response?.status === 201) {
+        onSuccess();
+      }
+    } catch (e) {
+      console.log("error", e.message);
+      setLoading(false);
+    }
+  };
+
+  const onPressSave = async (saveQuote) => {
+    // console.log("onPressSave");
+    await postData(saveQuote);
+    onCloseModal();
+  };
 
   return (
     <CustomDialog
       title={"Crea una nueva Frase"}
       onClose={onClose}
       isVisible={isVisible}
-      firstAction={onPressSave}
+      firstAction={() => onPressSave(newQuote)}
       firstBtn={"Guardar Frase"}
       firstBtnDisabled={!enableSave()}
+      loading={loading}
     >
       <Typography gutterBottom>
         Completa los campos para crear la frase
@@ -146,8 +192,8 @@ export default function CreateQuoteDialog({
             }
             style={{ width: 150 }}
           >
-            {categorias.map((option, idx) => (
-              <MenuItem key={idx} value={option.value}>
+            {categoriesObject.map((option, idx) => (
+              <MenuItem key={idx} value={option.name}>
                 {option.label}
               </MenuItem>
             ))}
@@ -211,6 +257,7 @@ export default function CreateQuoteDialog({
         <Separator height />
         <TextField
           label="Evento"
+          value={context.value.event}
           color="secondary"
           focused
           style={{ width: 420 }}

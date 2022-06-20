@@ -101,7 +101,8 @@ export default function HomeContent({ data }) {
       <CreateQuoteDialog
         isVisible={openModal}
         onClose={() => setOpenModal(false)}
-        onSave={(quote) => postData(quote)}
+        // onSave={(quote) => postData(quote)}
+        onSuccess={() => setShowSuccess(true)}
       />
     </div>
   );
