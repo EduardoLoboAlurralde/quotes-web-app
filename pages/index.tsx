@@ -2,7 +2,8 @@ import React from "react";
 import Head from "next/head";
 import HomeContent from "../src/components/HomeContent";
 
-const defaultEndpoint = "http://localhost:3006/api/quotes";
+//todo esto llevar al componente para manejar la paginacion
+const defaultEndpoint = "http://localhost:3006/api/quotes?limit=20& from=0";
 export async function getServerSideProps() {
   const res = await fetch(defaultEndpoint);
   const data = await res.json();
