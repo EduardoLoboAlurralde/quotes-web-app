@@ -1,14 +1,16 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
+import {
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -20,7 +22,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const StyledBtn = styled(Button)({
-  width: 100,
+  minWidth: 100,
 });
 
 const StyledDialogTitle = (props) => {
@@ -57,6 +59,7 @@ export default function CustomDialog({
   onClose = () => "",
   firstAction = () => "",
   firstBtn = "Save",
+  firstBtnDisabled,
   secondAction = () => "",
   secondBtn = "Cancel",
   title = "Title",
@@ -78,19 +81,23 @@ export default function CustomDialog({
           <div style={{ minWidth: 300, minHeight: 100 }}>{children}</div>
         </DialogContent>
         <DialogActions>
-          <StyledBtn
-            autoFocus
-            onClick={firstAction}
-            variant={"contained"}
-            color={"secondary"}
-          >
-            {secondBtn}
-          </StyledBtn>
+          {!!secondBtn && (
+            <StyledBtn
+              autoFocus
+              onClick={firstAction}
+              variant={"contained"}
+              color={"secondary"}
+            >
+              {secondBtn}
+            </StyledBtn>
+          )}
+
           <StyledBtn
             autoFocus
             onClick={secondAction}
             variant={"contained"}
             color={"primary"}
+            disabled={firstBtnDisabled}
           >
             {firstBtn}
           </StyledBtn>

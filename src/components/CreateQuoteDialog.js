@@ -1,59 +1,10 @@
 import * as React from "react";
-import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import Input from "@mui/material/Input";
 import TextField from "@mui/material/TextField";
 import Separator from "./Separator";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(2),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
-}));
-const ariaLabel = { "aria-label": "description" };
-
-const BootstrapDialogTitle = (props) => {
-  const { children, onClose, ...other } = props;
-
-  return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-      {children}
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </DialogTitle>
-  );
-};
-
-BootstrapDialogTitle.propTypes = {
-  children: PropTypes.node,
-  onClose: PropTypes.func.isRequired,
-};
+import CustomDialog from "./CustomDialog";
 
 //remplazar por respuesta GET
 const categorias = [
@@ -97,6 +48,27 @@ const type = [
     label: "Literatura",
   },
 ];
+
+export const LengthLabel = ({ length, maxLength, children }) => {
+  return (
+    <div style={{ position: "relative" }}>
+      {children}
+      <div
+        style={{
+          position: "absolute",
+          right: 15,
+          bottom: -10,
+          background: "white",
+          width: 50,
+        }}
+      >
+        <Typography style={{ fontSize: "10pt", textAlign: "center" }}>
+          {length} / {maxLength}
+        </Typography>
+      </div>
+    </div>
+  );
+};
 export default function CreateQuoteDialog({
   isVisible,
   onClose = () => "",
@@ -119,6 +91,9 @@ export default function CreateQuoteDialog({
     context,
   };
 
+  const MAX_AUTHOR_LENGTH = 30;
+  const MAX_SUMMARY_LENGTH = 50;
+
   const onCloseModal = () => {
     setContext({
       type: "",
@@ -139,116 +114,114 @@ export default function CreateQuoteDialog({
     onCloseModal();
   };
 
+  const enableSave = () => {
+    const checkSummary = quote.summary.length > 10;
+    const checkCategory = quote.category.length > 0;
+    const checkType = context.type.length > 0;
+
+    return checkCategory && checkSummary && checkType;
+  };
+
   return (
-    <div>
-      <BootstrapDialog
-        onClose={onCloseModal}
-        aria-labelledby="customized-dialog-title"
-        open={isVisible}
-        maxWidth={"lg"}
-      >
-        <BootstrapDialogTitle
-          id="customized-dialog-title"
-          onClose={onCloseModal}
-        >
-          Crea una nueva Frase
-        </BootstrapDialogTitle>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Completa los campos para crear la frase
-          </Typography>
-          <Separator height />
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="Categoria"
-                value={quote.category}
-                // helperText="Please select your currency"
-                onChange={(selected) =>
-                  setQuote({ ...quote, category: selected.target.value })
-                }
-                style={{ width: 150 }}
-              >
-                {categorias.map((option, idx) => (
-                  <MenuItem key={idx} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <Separator width />
-              <TextField
-                label="Autor"
-                color="secondary"
-                focused
-                style={{ width: 420 }}
-                onChange={(selected) =>
-                  setQuote({ ...quote, author: selected.target.value })
-                }
-              />
-            </div>
-            <Separator height />
-
+    <CustomDialog
+      title={"Crea una nueva Frase"}
+      onClose={onClose}
+      isVisible={isVisible}
+      firstAction={onPressSave}
+      firstBtn={"Guardar Frase"}
+      firstBtnDisabled={!enableSave()}
+    >
+      <Typography gutterBottom>
+        Completa los campos para crear la frase
+      </Typography>
+      <Separator height />
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <TextField
+            select
+            label="Categoria"
+            value={quote.category}
+            onChange={(selected) =>
+              setQuote({ ...quote, category: selected.target.value })
+            }
+            style={{ width: 150 }}
+          >
+            {categorias.map((option, idx) => (
+              <MenuItem key={idx} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Separator width />
+          <LengthLabel
+            length={quote.author.length}
+            maxLength={MAX_AUTHOR_LENGTH}
+          >
             <TextField
-              style={{ width: 600 }}
-              id="standard-multiline-static"
-              label="Texto de frase"
-              color="secondary"
-              multiline
-              rows={4}
-              variant="outlined"
-              onChange={(selected) =>
-                setQuote({ ...quote, summary: selected.target.value })
-              }
-            />
-
-            <Separator height />
-            <Typography gutterBottom>Contexto</Typography>
-            <Separator height x={0.5} />
-            <TextField
-              id="outlined-select-currency"
-              select
-              label="Tipo"
-              value={context.type}
-              // helperText="Please select your currency"
-              onChange={(selected) =>
-                setContext({ ...context, type: selected.target.value })
-              }
-              style={{ width: 250 }}
-            >
-              {type.map((option, idx) => (
-                <MenuItem key={idx} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Separator height />
-            <TextField
-              label="Evento"
+              label="Autor"
               color="secondary"
               focused
               style={{ width: 420 }}
               onChange={(selected) =>
-                setContext({
-                  ...context,
-                  value: { ...context.value, event: selected.target.value },
-                })
+                setQuote({ ...quote, author: selected.target.value })
               }
             />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            onClick={onPressSave}
-            variant={"outlined"}
-            color={"secondary"}
-          >
-            Guardar Frase
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
-    </div>
+          </LengthLabel>
+        </div>
+        <Separator height />
+        <LengthLabel
+          length={quote.summary.length}
+          maxLength={MAX_SUMMARY_LENGTH}
+        >
+          <TextField
+            style={{ width: 600 }}
+            id="standard-multiline-static"
+            label="Texto de frase"
+            color="secondary"
+            multiline
+            inputProps={{
+              maxLength: MAX_SUMMARY_LENGTH,
+            }}
+            rows={4}
+            variant="outlined"
+            onChange={(selected) =>
+              setQuote({ ...quote, summary: selected.target.value })
+            }
+          />
+        </LengthLabel>
+        <Separator height />
+        <Typography gutterBottom>Contexto</Typography>
+        <Separator height x={0.5} />
+        <TextField
+          id="outlined-select-currency"
+          select
+          label="Tipo"
+          value={context.type}
+          onChange={(selected) =>
+            setContext({ ...context, type: selected.target.value })
+          }
+          style={{ width: 250 }}
+        >
+          {type.map((option, idx) => (
+            <MenuItem key={idx} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Separator height />
+        <TextField
+          label="Evento"
+          color="secondary"
+          focused
+          style={{ width: 420 }}
+          onChange={(selected) =>
+            setContext({
+              ...context,
+              value: { ...context.value, event: selected.target.value },
+            })
+          }
+        />
+      </div>
+    </CustomDialog>
   );
 }

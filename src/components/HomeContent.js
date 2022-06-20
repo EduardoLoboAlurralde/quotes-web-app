@@ -3,7 +3,6 @@ import Table from "../components/Table";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
 import LoadingButton from "@mui/lab/LoadingButton";
-import SaveIcon from "@mui/icons-material/Save";
 import CreateQuoteDialog from "./CreateQuoteDialog";
 
 export default function HomeContent({ data }) {
@@ -78,12 +77,12 @@ export default function HomeContent({ data }) {
         >
           <LoadingButton
             loading={loading}
-            loadingPosition="start"
+            // loadingPosition="start"
             // loadingIndicator="Loading..."
             variant="contained"
             // onClick={() => postData(newQuoteBody)}
             onClick={() => setOpenModal(true)}
-            startIcon={<SaveIcon />}
+            // startIcon={<SaveIcon />}
           >
             Agregar Frase +
           </LoadingButton>
