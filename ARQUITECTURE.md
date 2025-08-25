@@ -40,17 +40,15 @@ En la raíz del proyecto, varios archivos de configuración controlan el comport
 * **`tsconfig.test.json`**: Extiende `tsconfig.json` para el entorno de pruebas, habilitando las opciones necesarias para Jest.
 * **`package.json`**: Define las dependencias del proyecto y los scripts, como:
 
-    * `dev`: levanta el servidor de desarrollo (por defecto con **Turbopack**).
-    * `dev:webpack`: levanta el servidor de desarrollo usando Webpack.
-    * `build`: compila la aplicación para producción.
-    * `lint`: corre ESLint y Prettier.
-    * `test`: ejecuta Jest.
-* **`jest.config.js`**: Configuración de Jest. Define `testEnvironment: "jsdom"`, el archivo de setup (`jest.setup.ts`) y reglas de transformación (`babel-jest` con `next/babel`) para que Jest procese JSX y TS igual que Next.
+  * `dev`: levanta el servidor de desarrollo (por defecto con **Turbopack**).
+  * `dev:webpack`: levanta el servidor de desarrollo usando Webpack.
+  * `build`: compila la aplicación para producción.
+  * `lint`: corre ESLint y Prettier.
+  * `test`: ejecuta Jest.
+* **`jest.config.js`**: Configuración de Jest. Define `preset: "ts-jest"`, el archivo de setup (`jest.setup.ts`) y reglas de transformación con **ts-jest** para procesar JSX y TypeScript.
 * **`jest.setup.ts`**: Se ejecuta antes de cada test, importando `@testing-library/jest-dom` para extender los matchers de Jest.
-* **`.babelrc`**: Configuración de Babel, usando el preset `next/babel` con `runtime: "automatic"` para habilitar el **nuevo JSX transform**.
 * **`.gitignore`**: Le dice a Git qué archivos y directorios debe ignorar, como el directorio `node_modules/` o los logs de compilación.
 
----
 
 ## Herramientas de Calidad y Formato
 
