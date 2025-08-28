@@ -20,6 +20,8 @@ export default function QuotesTable({ initialLimit = 5 }: Props) {
     total: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(initialLimit);
 
   const fetchQuotes = async (page: number, rowsPerPage: number) => {
     setLoading(true);
@@ -36,10 +38,9 @@ export default function QuotesTable({ initialLimit = 5 }: Props) {
     }
   };
 
-  // primer fetch
   useEffect(() => {
-    fetchQuotes(0, initialLimit);
-  }, [initialLimit]);
+    fetchQuotes(page, rowsPerPage);
+  }, [page, rowsPerPage]);
 
   return (
     <div style={{ width: 1200 }}>
@@ -54,6 +55,10 @@ export default function QuotesTable({ initialLimit = 5 }: Props) {
         ]}
         dataSource={quotesData}
         RowComponent={QuoteRow}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={setPage}
+        onRowsPerPageChange={setRowsPerPage}
         onRefresh={({ page, rowsPerPage }) => fetchQuotes(page, rowsPerPage)}
       />
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 
 type Column = {
   key: string;
@@ -17,8 +17,15 @@ type Props<T> = {
   dataSource: PageData<T>;
   columns: Column[];
   RowComponent: React.FC<{ row: T }>;
+
+  // paginación controlada por el padre
+  page: number;
+  rowsPerPage: number;
   rowsPerPageOptions?: number[];
-  defaultRowsPerPage?: number;
+
+  // callbacks
+  onPageChange?: (newPage: number) => void;
+  onRowsPerPageChange?: (newRowsPerPage: number) => void;
   onRefresh?: (params: { page: number; rowsPerPage: number }) => void;
 };
 
@@ -26,27 +33,26 @@ export default function Table<T>({
   dataSource,
   columns,
   RowComponent,
+  page,
+  rowsPerPage,
   rowsPerPageOptions = [5, 10, 25],
-  defaultRowsPerPage = 5,
+  onPageChange,
+  onRowsPerPageChange,
   onRefresh,
 }: Props<T>) {
   const { rows, total } = dataSource;
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
-
   const totalPages = rowsPerPage > 0 ? Math.ceil(total / rowsPerPage) : 1;
 
   const handleChangePage = (newPage: number) => {
     if (newPage >= 0 && newPage < totalPages) {
-      setPage(newPage);
+      onPageChange?.(newPage);
       onRefresh?.({ page: newPage, rowsPerPage });
     }
   };
 
   const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newRows = parseInt(e.target.value, 10);
-    setRowsPerPage(newRows);
-    setPage(0);
+    onRowsPerPageChange?.(newRows);
     onRefresh?.({ page: 0, rowsPerPage: newRows });
   };
 
@@ -127,6 +133,7 @@ export default function Table<T>({
             {"<<"}
           </button>
           <button
+            className={"ml-4"}
             onClick={() => handleChangePage(page - 1)}
             disabled={page === 0}
           >
@@ -136,6 +143,7 @@ export default function Table<T>({
             Page {page + 1} of {totalPages}
           </span>
           <button
+            className={"mr-4"}
             onClick={() => handleChangePage(page + 1)}
             disabled={page >= totalPages - 1}
           >
