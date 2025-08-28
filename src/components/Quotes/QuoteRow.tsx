@@ -1,12 +1,8 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Quote } from "@/types/Quote";
 
-type Props = {
-  row: Quote;
-};
-
-export default function QuoteRow({ row }: Props) {
+const QuoteRow: React.FC<{ row: Quote }> = ({ row }) => {
   const { author, summary, category, type, context } = row;
   const categoryName: string | undefined = category?.name;
   const typeName: string | undefined = type?.name;
@@ -63,4 +59,6 @@ export default function QuoteRow({ row }: Props) {
       )}
     </>
   );
-}
+};
+
+export default QuoteRow;

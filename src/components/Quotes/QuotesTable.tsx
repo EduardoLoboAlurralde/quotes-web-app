@@ -10,18 +10,14 @@ type QuoteResponse = {
   total: number;
 };
 
-type Props = {
-  initialLimit?: number;
-};
-
-export default function QuotesTable({ initialLimit = 5 }: Props) {
+export default function QuotesTable() {
   const [quotesData, setQuotesData] = useState<QuoteResponse>({
     rows: [],
     total: 0,
   });
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(initialLimit);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 
   const fetchQuotes = async (page: number, rowsPerPage: number) => {
     setLoading(true);
@@ -45,7 +41,7 @@ export default function QuotesTable({ initialLimit = 5 }: Props) {
   return (
     <div style={{ width: 1200 }}>
       {loading && <p>Cargando...</p>}
-      <Table
+      <Table<Quote>
         columns={[
           { key: "category", label: "Category" },
           { key: "type", label: "Type" },
