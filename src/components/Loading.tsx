@@ -14,11 +14,11 @@ export default function Loading(): JSX.Element {
         flexDirection: "column",
       }}
     >
-      <p style={{ fontSize: "14pt" }}>loading</p>
       <Lottie
         animationData={lottieLoading}
         style={{ width: 200, margin: -10 }}
       />
+      <p style={{ fontSize: "14pt" }}>loading</p>
     </div>
   );
 }

@@ -11,10 +11,8 @@ type QuoteResponse = {
 };
 
 export default function QuotesTable() {
-  const [quotesData, setQuotesData] = useState<QuoteResponse>({
-    rows: [],
-    total: 0,
-  });
+  const [quotesData, setQuotesData] = useState<QuoteResponse | undefined>(undefined);
+
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
@@ -37,10 +35,9 @@ export default function QuotesTable() {
   useEffect(() => {
     fetchQuotes(page, rowsPerPage);
   }, [page, rowsPerPage]);
-
+  console.log({loading})
   return (
     <div style={{ width: 1200 }}>
-      {loading && <p>Cargando...</p>}
       <Table<Quote>
         columns={[
           { key: "category", label: "Category" },
@@ -49,6 +46,8 @@ export default function QuotesTable() {
           { key: "summary", label: "Summary" },
           { key: "context", label: "Context" },
         ]}
+        // loading={true}
+        loading={loading}
         dataSource={quotesData}
         RowComponent={QuoteRow}
         page={page}
