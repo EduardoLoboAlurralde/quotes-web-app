@@ -1,13 +1,22 @@
-export default function Home() {
+"use client";
+import QuotesTable from "@/components/Quotes/QuotesTable";
+
+export default function HomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main>
-        <h1>Hola</h1>
-        <p>Bienvenido a Next.js</p>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <p>footer</p>
-      </footer>
-    </div>
+    <main>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          width: "100vw",
+          alignItems: "center",
+          background: "grey",
+        }}
+      >
+        <h1>Quotes</h1>
+        <QuotesTable initialLimit={5} />
+      </div>
+    </main>
   );
 }
