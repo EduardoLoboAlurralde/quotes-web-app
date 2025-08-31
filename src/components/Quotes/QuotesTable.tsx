@@ -4,6 +4,7 @@ import Table from "@/components/Table";
 import QuoteRow from "@/components/Quotes/QuoteRow";
 import { getAllQuotes } from "@/lib/api/quotesServices";
 import { Quote } from "@/types/Quote";
+import Filters from "@/components/Quotes/Filters";
 
 type QuoteResponse = {
   rows: Quote[];
@@ -38,15 +39,6 @@ export default function QuotesTable() {
   useEffect(() => {
     fetchQuotes(page, rowsPerPage);
   }, [page, rowsPerPage]);
-  console.log({ loading });
-
-  const Filters = () => {
-    return (
-      <div className={"flex items-center justify-center border flex-1"}>
-        Filters
-      </div>
-    );
-  };
 
   return (
     <div style={{ width: 1200 }}>
