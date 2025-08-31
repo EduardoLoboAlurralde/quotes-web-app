@@ -1,11 +1,18 @@
+import { QuoteFilters } from "@/types/QuoteFilters";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getAllQuotes(params?: { limit?: number; from?: number }) {
+export async function getAllQuotes(params?: QuoteFilters) {
   const query = new URLSearchParams();
 
   if (params?.limit !== undefined)
     query.append("limit", params.limit.toString());
   if (params?.from !== undefined) query.append("from", params.from.toString());
+  if (params?.category) query.append("category", params.category);
+  if (params?.type) query.append("type", params.type);
+  if (params?.language) query.append("language", params.language);
+  if (params?.dateFrom) query.append("dateFrom", params.dateFrom);
+  if (params?.dateTo) query.append("dateTo", params.dateTo);
 
   const res = await fetch(`${BASE_URL}/api/quotes?${query.toString()}`);
   if (!res.ok) throw new Error("Error al obtener las quotes");

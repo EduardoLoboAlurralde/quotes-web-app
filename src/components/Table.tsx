@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Loading from "@/components/Loading";
+import IconButton from "@/components/IconButton";
 
 type Column = {
   key: string;
@@ -15,16 +15,31 @@ type PageData<T> = {
 };
 
 type Props<T> = {
-  dataSource?: PageData<T>; // arranca como undefined
+  dataSource?: PageData<T>;
   columns: Column[];
   RowComponent: React.FC<{ row: T }>;
+
   page: number;
   rowsPerPage: number;
   rowsPerPageOptions?: number[];
+
+  // callbacks
   onPageChange?: (newPage: number) => void;
   onRowsPerPageChange?: (newRowsPerPage: number) => void;
   onRefresh?: (params: { page: number; rowsPerPage: number }) => void;
+  onAdd?: () => void; // opcional botón +
+
+  // estados
   loading?: boolean;
+  error?: Error | null;
+
+  // componentes customizables
+  renderLoading?: () => React.ReactNode;
+  renderEmpty?: () => React.ReactNode;
+  renderError?: (error: Error) => React.ReactNode;
+
+  // área de acciones extra
+  actions?: React.ReactNode;
 };
 
 export default function Table<T>({
@@ -37,12 +52,19 @@ export default function Table<T>({
   onPageChange,
   onRowsPerPageChange,
   onRefresh,
+  onAdd,
   loading = false,
+  error = null,
+  renderLoading,
+  renderEmpty,
+  renderError,
+  actions,
 }: Props<T>) {
   const rows = dataSource?.rows ?? [];
   const total = dataSource?.total ?? 0;
   const totalPages = rowsPerPage > 0 ? Math.ceil(total / rowsPerPage) : 1;
 
+  // handlers
   const handleChangePage = (newPage: number) => {
     if (newPage >= 0 && newPage < totalPages) {
       onPageChange?.(newPage);
@@ -60,19 +82,46 @@ export default function Table<T>({
     onRefresh?.({ page, rowsPerPage });
   };
 
-  if (!dataSource) {
+  // === Loading inicial ===
+  if (!dataSource && loading) {
     return (
-      <div className={"w-full flex justify-center items-center h-96"}>
-        <Loading />
+      <div className="w-full flex justify-center items-center h-96">
+        {renderLoading ? renderLoading() : <span>Loading...</span>}
+      </div>
+    );
+  }
+
+  // === Error ===
+  if (error) {
+    return (
+      <div className="w-full flex justify-center items-center h-96 text-red-600">
+        {renderError ? renderError(error) : <span>{error.message}</span>}
       </div>
     );
   }
 
   return (
     <div className="w-full relative">
-      {/* Refresh */}
-      <div className="p-2 w-full flex justify-end">
-        <button onClick={handleRefresh}>🔄</button>
+      {/* Área de acciones */}
+      <div className="p-2 w-full flex justify-end gap-2">
+        {actions}
+        {onAdd && (
+          <IconButton
+            lib="fa6"
+            name="FaPlus"
+            title="Add"
+            variant="default"
+            onClick={onAdd}
+          />
+        )}
+
+        <IconButton
+          lib="fa6"
+          name="FaArrowRotateRight"
+          title="Refresh"
+          variant="default"
+          onClick={handleRefresh}
+        />
       </div>
 
       <div
@@ -92,6 +141,7 @@ export default function Table<T>({
                 <th
                   key={col.key}
                   style={{
+                    width: col.width,
                     textAlign: col.align || "left",
                     padding: "10px",
                     borderBottom: "2px solid #ccc",
@@ -111,13 +161,9 @@ export default function Table<T>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  style={{
-                    padding: "16px",
-                    textAlign: "center",
-                    color: "#666",
-                  }}
+                  style={{ padding: "16px", textAlign: "center" }}
                 >
-                  No data available
+                  {renderEmpty ? renderEmpty() : "No data available"}
                 </td>
               </tr>
             )}
@@ -129,7 +175,7 @@ export default function Table<T>({
           <div
             style={{
               position: "absolute",
-              top: 40, // debajo del header
+              top: 40,
               left: 0,
               right: 0,
               height: "5px",
@@ -146,12 +192,48 @@ export default function Table<T>({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "8px 12px",
+            padding: "8px 0px",
             borderTop: "1px solid #ddd",
             fontSize: 14,
           }}
         >
-          <div>
+          <div className={"w-2/12 "} style={{ maxWidth: 150 }} />
+          <div className="flex items-center justify-center gap-2 w-8/12">
+            <IconButton
+              lib="md"
+              name="MdFirstPage"
+              onClick={() => handleChangePage(0)}
+              disabled={page === 0}
+              variant="ghost"
+            />
+            <IconButton
+              lib="md"
+              name="MdNavigateBefore"
+              onClick={() => handleChangePage(page - 1)}
+              disabled={page === 0}
+              variant="ghost"
+            />
+
+            <span className="mx-2">
+              Page {page + 1} of {totalPages}
+            </span>
+
+            <IconButton
+              lib="md"
+              name="MdNavigateNext"
+              onClick={() => handleChangePage(page + 1)}
+              disabled={page >= totalPages - 1}
+              variant="ghost"
+            />
+            <IconButton
+              lib="md"
+              name="MdLastPage"
+              onClick={() => handleChangePage(totalPages - 1)}
+              disabled={page >= totalPages - 1}
+              variant="ghost"
+            />
+          </div>
+          <div className={"w-2/12  "} style={{ maxWidth: 180 }}>
             Rows per page:{" "}
             <select value={rowsPerPage} onChange={handleChangeRowsPerPage}>
               {rowsPerPageOptions?.map((opt) => (
@@ -160,35 +242,6 @@ export default function Table<T>({
                 </option>
               ))}
             </select>
-          </div>
-
-          <div>
-            <button onClick={() => handleChangePage(0)} disabled={page === 0}>
-              {"<<"}
-            </button>
-            <button
-              className={"ml-4"}
-              onClick={() => handleChangePage(page - 1)}
-              disabled={page === 0}
-            >
-              {"<"}
-            </button>
-            <span style={{ margin: "0 8px" }}>
-              Page {page + 1} of {totalPages}
-            </span>
-            <button
-              className={"mr-4"}
-              onClick={() => handleChangePage(page + 1)}
-              disabled={page >= totalPages - 1}
-            >
-              {">"}
-            </button>
-            <button
-              onClick={() => handleChangePage(totalPages - 1)}
-              disabled={page >= totalPages - 1}
-            >
-              {">>"}
-            </button>
           </div>
         </div>
       </div>

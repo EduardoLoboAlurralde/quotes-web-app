@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@/components/Table";
 import QuoteRow from "@/components/Quotes/QuoteRow";
 import { getAllQuotes } from "@/lib/api/quotesServices";
@@ -11,7 +11,9 @@ type QuoteResponse = {
 };
 
 export default function QuotesTable() {
-  const [quotesData, setQuotesData] = useState<QuoteResponse | undefined>(undefined);
+  const [quotesData, setQuotesData] = useState<QuoteResponse | undefined>(
+    undefined,
+  );
 
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -23,6 +25,7 @@ export default function QuotesTable() {
       const data = await getAllQuotes({
         limit: rowsPerPage,
         from: page * rowsPerPage,
+        // category: '68a39ca2fe1eca094157ad1b'
       });
       setQuotesData(data);
     } catch (err) {
@@ -35,18 +38,26 @@ export default function QuotesTable() {
   useEffect(() => {
     fetchQuotes(page, rowsPerPage);
   }, [page, rowsPerPage]);
-  console.log({loading})
+  console.log({ loading });
+
+  const Filters = () => {
+    return (
+      <div className={"flex items-center justify-center border flex-1"}>
+        Filters
+      </div>
+    );
+  };
+
   return (
     <div style={{ width: 1200 }}>
       <Table<Quote>
         columns={[
-          { key: "category", label: "Category" },
-          { key: "type", label: "Type" },
-          { key: "author", label: "Author" },
+          { key: "category", label: "Category", width: "12%" },
+          { key: "type", label: "Type", width: "12%" },
+          { key: "author", label: "Author", width: "15%" },
           { key: "summary", label: "Summary" },
-          { key: "context", label: "Context" },
+          { key: "context", label: "Context", width: "10%" },
         ]}
-        // loading={true}
         loading={loading}
         dataSource={quotesData}
         RowComponent={QuoteRow}
@@ -55,6 +66,8 @@ export default function QuotesTable() {
         onPageChange={setPage}
         onRowsPerPageChange={setRowsPerPage}
         onRefresh={({ page, rowsPerPage }) => fetchQuotes(page, rowsPerPage)}
+        onAdd={() => console.log("Nuevo elemento")}
+        actions={(<Filters />) as React.ReactNode}
       />
     </div>
   );
