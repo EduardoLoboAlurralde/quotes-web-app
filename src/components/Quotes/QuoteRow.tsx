@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Quote } from "@/types/Quote";
+import { Quote } from "@/types/Quotes";
 
 const QuoteRow: React.FC<{ row: Quote }> = ({ row }) => {
   const { author, summary, category, type, context } = row;

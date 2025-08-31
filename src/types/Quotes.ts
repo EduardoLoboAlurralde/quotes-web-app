@@ -1,7 +1,7 @@
-import { Category } from "./Category";
-import { Type } from "./Type";
+import { Category } from "@/types/Category";
+import { Type } from "@/types/Type";
 
-export interface Quote {
+export type Quote = {
   _id: string;
   author: string;
   summary: string;
@@ -25,4 +25,19 @@ export interface Quote {
     album: string;
   };
   __v: number;
-}
+};
+
+export type QuoteResponse = {
+  total: number;
+  rows: Quote[];
+};
+
+export type QuoteFilters = {
+  limit?: number;
+  from?: number;
+  category?: string;
+  type?: string;
+  language?: string;
+  dateFrom?: string;
+  dateTo?: string;
+};

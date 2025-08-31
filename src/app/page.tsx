@@ -1,5 +1,4 @@
 "use client";
-import QuotesTable from "@/components/Quotes/QuotesTable";
 
 export default function HomePage() {
   return (
@@ -14,8 +13,7 @@ export default function HomePage() {
           background: "grey",
         }}
       >
-        <h1>Quotes</h1>
-        <QuotesTable initialLimit={5} />
+        <h1>Quotes App</h1>
       </div>
     </main>
   );
