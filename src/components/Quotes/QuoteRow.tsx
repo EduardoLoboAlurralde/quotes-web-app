@@ -12,7 +12,7 @@ const QuoteRow: React.FC<{ row: Quote }> = ({ row }) => {
   return (
     <>
       {/* Fila principal */}
-      <tr>
+      <tr style={{ height: 50 }}>
         <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>
           {categoryName}
         </td>
@@ -34,6 +34,7 @@ const QuoteRow: React.FC<{ row: Quote }> = ({ row }) => {
               borderRadius: 4,
               padding: "2px 6px",
               cursor: "pointer",
+              display: summary ? "flex" : "none",
             }}
           >
             {open ? "−" : "+"}

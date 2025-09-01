@@ -23,17 +23,14 @@ export default function IconButton({
   variant = "default",
 }: Props) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-full p-2 transition-colors";
+    "inline-flex items-center justify-center rounded-full p-2 transition-colors ripple";
   const variants: Record<string, string> = {
     default: "bg-gray-100 hover:bg-gray-200 text-gray-700",
-    // colores
     primary: "bg-blue-100 hover:bg-blue-200 text-blue-600",
     success: "bg-green-100 hover:bg-green-200 text-green-600",
     warning: "bg-yellow-100 hover:bg-yellow-200 text-yellow-600",
     danger: "bg-red-100 hover:bg-red-200 text-red-600",
-    // neutral
     info: "bg-sky-100 hover:bg-sky-200 text-sky-600",
-    // transparente
     ghost: "bg-transparent hover:bg-gray-100 text-gray-600",
   };
 

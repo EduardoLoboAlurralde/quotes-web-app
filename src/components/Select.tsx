@@ -23,7 +23,7 @@ export default function Select<T>({
 }: SelectProps<T>) {
   return (
     <select
-      className="border rounded px-2 py-1"
+      className="border rounded px-2 py-1 bg-white text-black"
       value={value}
       onChange={(e) => onChange?.(e.target.value)}
       disabled={disabled}

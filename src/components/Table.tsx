@@ -27,7 +27,7 @@ type Props<T> = {
   onPageChange?: (newPage: number) => void;
   onRowsPerPageChange?: (newRowsPerPage: number) => void;
   onRefresh?: (params: { page: number; rowsPerPage: number }) => void;
-  onAdd?: () => void; // opcional botón +
+  onAdd?: () => void;
 
   // estados
   loading?: boolean;
@@ -38,7 +38,6 @@ type Props<T> = {
   renderEmpty?: () => React.ReactNode;
   renderError?: (error: Error) => React.ReactNode;
 
-  // área de acciones extra
   actions?: React.ReactNode;
 };
 
@@ -102,7 +101,6 @@ export default function Table<T>({
 
   return (
     <div className="w-full relative">
-      {/* Área de acciones */}
       <div className="p-2 w-full flex justify-end gap-2">
         {actions}
         {onAdd && (
@@ -156,12 +154,27 @@ export default function Table<T>({
 
           <tbody>
             {rows.length > 0 ? (
-              rows.map((row, idx) => <RowComponent key={idx} row={row} />)
+              <>
+                {rows.map((row, idx) => (
+                  <RowComponent key={idx} row={row} />
+                ))}
+
+                {/* Relleno de filas vacías */}
+                {Array.from({ length: rowsPerPage - rows.length }).map(
+                  (_, i) => (
+                    <RowComponent key={`empty-${i}`} row={{} as T} />
+                  ),
+                )}
+              </>
             ) : (
               <tr>
                 <td
                   colSpan={columns.length}
-                  style={{ padding: "16px", textAlign: "center" }}
+                  style={{
+                    padding: "16px",
+                    textAlign: "center",
+                    height: "50px",
+                  }}
                 >
                   {renderEmpty ? renderEmpty() : "No data available"}
                 </td>
@@ -170,7 +183,6 @@ export default function Table<T>({
           </tbody>
         </table>
 
-        {/* Barra de carga en refrescos posteriores */}
         {loading && dataSource && (
           <div
             style={{
@@ -186,7 +198,6 @@ export default function Table<T>({
           />
         )}
 
-        {/* Paginación */}
         <div
           style={{
             display: "flex",
