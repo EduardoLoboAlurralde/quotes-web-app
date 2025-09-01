@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import Select from "@/components/Select";
 import { CatalogsProvider, useCatalogs } from "@/components/CatalogsContext";
 import { useQuotesAdmin } from "@/components/Quotes/QuotesAdminContext";
-import {Category} from "@/types/Categories";
-import {Type} from "@/types/Types";
+import { Category } from "@/types/Categories";
+import { Type } from "@/types/Types";
+import Separator from "@/components/Separator";
 
 function FiltersInner() {
   const {
@@ -34,16 +35,17 @@ function FiltersInner() {
         labelKey="name"
         value={category}
         onChange={setCategory}
-        placeholder="Categoría"
+        placeholder="Category"
         disabled={loading}
       />
+      <Separator width={1} />
       <Select<Type>
         items={types}
         valueKey="_id"
         labelKey="name"
         value={type}
         onChange={setType}
-        placeholder="Tipo"
+        placeholder="Type"
         disabled={loading}
       />
     </div>

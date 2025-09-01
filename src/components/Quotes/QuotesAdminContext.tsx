@@ -9,7 +9,7 @@ import { Quote, QuoteFilters } from "@/types/quotes";
 import { getAllQuotes } from "@/lib/api/quotesServices";
 
 type QuotesAdminContextType = {
-  quotes: Quote[];
+  quotes: Quote[] | undefined;
   total: number;
   loading: boolean;
   error: string | null;
@@ -25,9 +25,9 @@ export const QuotesAdminProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [quotes, setQuotes] = useState<Quote[] | undefined>(undefined);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async (params?: QuoteFilters) => {

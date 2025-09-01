@@ -25,14 +25,12 @@ export default function QuotesTable() {
     { key: "context", label: "Context", width: "10%" },
   ];
 
-  console.log({ quotes, total });
   return (
     <div style={{ width: 1200 }}>
       <Table<Quote>
         columns={columns}
         loading={loading}
-        // dataSource={quotes && total ? { rows: quotes, total } : undefined}
-        dataSource={quotes && total ? { rows: quotes, total } : undefined}
+        dataSource={quotes ? { rows: quotes, total } : undefined}
         RowComponent={QuoteRow}
         page={page}
         rowsPerPage={rowsPerPage}

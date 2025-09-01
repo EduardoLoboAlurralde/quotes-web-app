@@ -17,7 +17,8 @@ export default function Select<T>({
   labelKey,
   value,
   onChange,
-  placeholder = "Seleccionar...",
+  placeholder = "Select...",
+  selectAll = "All",
   disabled = false,
 }: SelectProps<T>) {
   return (
@@ -27,7 +28,14 @@ export default function Select<T>({
       onChange={(e) => onChange?.(e.target.value)}
       disabled={disabled}
     >
-      <option value="">{placeholder}</option>
+      {/* Placeholder on empty */}
+      <option value="" disabled>
+        {placeholder}
+      </option>
+
+      {/* "All" */}
+      <option value="">{selectAll}</option>
+
       {items.map((item, idx) => (
         <option key={idx} value={String(item[valueKey])}>
           {String(item[labelKey])}
