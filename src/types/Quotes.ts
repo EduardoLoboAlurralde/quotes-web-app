@@ -1,5 +1,5 @@
-import { Category } from "@/types/Category";
-import { Type } from "@/types/Type";
+import { Category } from "@/types/Categories";
+import { Type } from "@/types/Types";
 
 export type Quote = {
   _id: string;
@@ -25,11 +25,6 @@ export type Quote = {
     album: string;
   };
   __v: number;
-};
-
-export type QuoteResponse = {
-  total: number;
-  rows: Quote[];
 };
 
 export type QuoteFilters = {

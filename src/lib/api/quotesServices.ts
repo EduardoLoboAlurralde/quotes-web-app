@@ -1,4 +1,4 @@
-import { QuoteFilters } from "@/types/QuoteFilters";
+import { QuoteFilters } from "@/types/Quotes";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
